@@ -51,10 +51,10 @@ for i=1:m
     
     
 end
-plot(States(:,1),States(:,2))
-title('Randomized path, seed 19, m=3000')
-xlabel('X1 location') 
-ylabel('X2 location')
+%plot(States(:,1),States(:,2))
+%title('Randomized path, seed 19, m=3000')
+%xlabel('X1 location') 
+%ylabel('X2 location')
 
 %% Making of a nxN state matrix for use in part 3 
 v=90; zeta=1.5; gamma=3; 
@@ -100,7 +100,7 @@ w = (p(Xi(1,:),Xi(4,:),Y(:,1)));
 tau(1,1) = sum(Xi(1,:).*w)/sum(w);
 tau(2,1) = sum(Xi(4,:).*w)/sum(w);
 
-Wi=transpose(mvnrnd([0,0],sigma^2*eye(2),N));
+Wi=transpose(mvnrnd([0,0],sigma*eye(2),N));
 
 
 Zi=transpose(zn(Commands(:,1),:));
@@ -110,7 +110,7 @@ for k = 1:500 % main loop
     
     %w=w/sum(w);
     Zi=transpose(zn(Commands(:,k+1),:));
-    Wi=transpose(mvnrnd([0,0],sigma^2*eye(2),N));
+    Wi=transpose(mvnrnd([0,0],sigma*eye(2),N));
     tau(1,k+1) =  sum(Xi(1,:).*w)/sum(w);
     tau(2,k+1) =  sum(Xi(4,:).*w)/sum(w);
 end
@@ -152,7 +152,7 @@ Wi=transpose(mvnrnd([0,0],sigma^2*eye(2),N));
 
 
 Zi=transpose(zn(Commands(:,1),:));
-for k = 1:500 % main loop
+for k = 1:70 % main loop
     Xi=theta*(Xi)+phiz*(Zi)+phiw*(Wi); %Calculate each new state
     w =log(w.*p(Xi(1,:),Xi(4,:),Y(:,k+1))); % weighting REMOVE/INCLUDE LOG
     L=max(w);
@@ -164,27 +164,27 @@ for k = 1:500 % main loop
     tau(2,k+1) =  sum(Xi(4,:).*w)/sum(w);
 end
 
-plot(tau(1,:),tau(2,:))
-title("SIS, N=10000")
-hold on
-plot(pos_vec(1,1),pos_vec(2,1),'d')
-hold on
-plot(pos_vec(1,2),pos_vec(2,2),'d')
-hold on
-plot(pos_vec(1,3),pos_vec(2,3),'d')
-hold on
-plot(pos_vec(1,4),pos_vec(2,4),'d')
-hold on
-plot(pos_vec(1,5),pos_vec(2,5),'d')
-hold on
-plot(pos_vec(1,6),pos_vec(2,6),'d')
-%figure
-%title("Histogram n=70")
-%hist(w)
-ESSM=1/(sum((w/sum(w)).^2))
+% plot(tau(1,:),tau(2,:))
+% title("SIS, N=10000")
+% hold on
+% plot(pos_vec(1,1),pos_vec(2,1),'d')
+% hold on
+% plot(pos_vec(1,2),pos_vec(2,2),'d')
+% hold on
+% plot(pos_vec(1,3),pos_vec(2,3),'d')
+% hold on
+% plot(pos_vec(1,4),pos_vec(2,4),'d')
+% hold on
+% plot(pos_vec(1,5),pos_vec(2,5),'d')
+% hold on
+% plot(pos_vec(1,6),pos_vec(2,6),'d')
+figure
+title("Histogram n=70")
+%loglog(hist((w))
+%ESSM=1/(sum((w/sum(w)).^2))
 %% Part 4
 
-
+NewCommands=zeros(N,n);
 tau=zeros(2,n);
 
 Xi=transpose(mvnrnd(zero,sigmamatrix,N)); %Initilization
@@ -194,18 +194,39 @@ w = p(Xi(1,:),Xi(4,:),Y(:,1));
 tau(1,1) = sum(Xi(1,:).*w)/sum(w);
 tau(2,1) = sum(Xi(4,:).*w)/sum(w);
 
-Wi=transpose(mvnrnd([0,0],sigma^2*eye(2),N));
-
-
+weights=zeros(n,N);
+weights(1,:)=w;
+st=Commands(:,1);
 Zi=transpose(zn(Commands(:,1),:));
+cs=cumsum(P,2);
+NewCommands(:,1)=st;
 for k = 1:500 % main loop
     ind=randsample(N,N,true,w);
     Xi=Xi(:,ind);
+    %Resample states
+    %Zi=Zi(ind);
+    %Commands=Commands(ind,:);
+    Rand=rand(N,1);
+    StateArray=zeros(N,1);
+    for j=1:5
+        vals=cs(st,j);
+        indexarray=Rand<=vals;
+        StateArray=StateArray+j*indexarray;
+        Rand(indexarray)=1.2;
+
+        
+        
+    end
+    st=StateArray;
+    NewCommands(:,k+1)=st;
+    Zi=transpose(zn(StateArray,:));
+    Wi=transpose(mvnrnd([0,0],sigma^2*eye(2),N));
     Xi=theta*(Xi)+phiz*(Zi)+phiw*(Wi); %Calculate each new state
     w =(p(Xi(1,:),Xi(4,:),Y(:,k+1))); % weighting REMOVE/INCLUDE LOG
+    w=w/sum(w);
+    weights(k+1,:)=w;
     
-    Zi=transpose(zn(Commands(:,k+1),:));
-    Wi=transpose(mvnrnd([0,0],sigma^2*eye(2),N));
+    
     tau(1,k+1) =  sum(Xi(1,:).*w)/sum(w);
     tau(2,k+1) =  sum(Xi(4,:).*w)/sum(w);
 end
@@ -225,58 +246,100 @@ plot(pos_vec(1,5),pos_vec(2,5),'d')
 hold on
 plot(pos_vec(1,6),pos_vec(2,6),'d')
 
-%% Part 5
+
+%% Most probable driving command
+drivingCommand=zeros(1,n);
+for j=1:n % Go through the time-steps
+    
+    probability=zeros(1,5);
+    for i=1:5%Go through the driving commands
+        I = find(NewCommands(:,j) == i);
+        vals=weights(j,I);
+        probability(1,i)=sum(vals);
+    end
+    [val, idx] = max(probability);
+    drivingCommand(1,j)=idx;
+    
+end
+drivingCommand
+hist(drivingCommand)
+
+
+
+%% Part 5 (2.3)
+clc
 
 load("RSSI-measurements-unknown-sigma.mat")
-T = 100;
 
-tau=zeros(6,n);
-
-Xi=transpose(mvnrnd(zero,sigmamatrix,N)); %Initilization
-
-%p = @(x1,x2,y) prod(normpdf(Y,(6*v*ones(1,N)-10*gamma*log10(vecnorm(([x1;x2]-pos_vec(:,1).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,2).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,3).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,4).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,5).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,6).*ones(2,N))))),zeta),2);%1/(2*pi*zeta^2)^3*exp(-1/2*(sum(y)*ones(1,N)-(6*v*ones(1,N)-10*gamma*log10(vecnorm(([x1;x2]-pos_vec(:,1).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,2).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,3).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,4).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,5).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,6).*ones(2,N)))))));
-
-% choose sigma that gives maximum values
-sigmaRes = zeros(n,1);
-sigmaV = zeros(T,1);
-wmat = zeros(T,N);
-for j = 1:T
-    sigmaV(j) = rand(1)*3;
-    wmat(j,:) = p5(Xi(1,:),Xi(4,:),Y(:,1),sigmaV(j)); % weighting REMOVE/INCLUDE LOG
-end
-[wmax,wind] = max(sum(wmat,2));
-w = wmat(wind,:);
-sigmaRes(k+1) = sigmaV(wind);
-
-tau(1,1) = sum(Xi(1,:).*w)/sum(w);
-tau(2,1) = sum(Xi(4,:).*w)/sum(w);
-
-Wi=transpose(mvnrnd([0,0],sigma^2*eye(2),N));
-
-
-Zi=transpose(zn(Commands(:,1),:));
-for k = 1:n-1 % main loop
-    ind=randsample(N,N,true,w);
-    Xi=Xi(:,ind);
-    Xi=theta*(Xi)+phiz*(Zi)+phiw*(Wi); %Calculate each new state
-    
-    % --------- Sigma part ---------
-    for j = 1:T
-        sigmaV(j) = rand(1)*3;
-        wmat(j,:) = (p5(Xi(1,:),Xi(4,:),Y(:,k+1),sigmaV(j))); % weighting REMOVE/INCLUDE LOG
-    end
-    temp = sum(w,2);
-    [wmax,wind] = max(sum(wmat,2));
-    w = wmat(wind,:);
-    sigmaRes(k+1) = sigmaV(wind);
-    % ---------         ----------
-    
-    Zi=transpose(zn(Commands(:,k+1),:));
-    Wi=transpose(mvnrnd([0,0],sigma^2*eye(2),N));
-    tau(1,k+1) =  sum(Xi(1,:).*w)/sum(w);
-    tau(2,k+1) =  sum(Xi(4,:).*w)/sum(w);
-end
-
-plot(tau(1,:),tau(2,:))
+plot(pos_vec(1,:), pos_vec(2,:),'d')
 hold on
-plot(pos_vec(1,1),pos_vec(2,1),'d')
+
+T = 10;
+
+
+cn = zeros(T,1);
+sigmaV = linspace(2.248, 2.25, T);
+
+
+for h = 1:T
+
+    omega = zeros(n,1);
+    NewCommands=zeros(N,n);
+    tau=zeros(2,n);
+
+    Xi=transpose(mvnrnd(zero,sigmamatrix,N)); %Initilization
+
+    %p = @(x1,x2,y) prod(normpdf(Y,(6*v*ones(1,N)-10*gamma*log10(vecnorm(([x1;x2]-pos_vec(:,1).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,2).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,3).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,4).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,5).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,6).*ones(2,N))))),zeta),2);%1/(2*pi*zeta^2)^3*exp(-1/2*(sum(y)*ones(1,N)-(6*v*ones(1,N)-10*gamma*log10(vecnorm(([x1;x2]-pos_vec(:,1).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,2).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,3).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,4).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,5).*ones(2,N)))+vecnorm(([x1;x2]-pos_vec(:,6).*ones(2,N)))))));
+    w = p5(Xi(1,:),Xi(4,:),Y(:,1),sigmaV(h),pos_vec);
+    omega(1) = sum(w);
+
+    tau(1,1) = sum(Xi(1,:).*w)/sum(w);
+    tau(2,1) = sum(Xi(4,:).*w)/sum(w);
+
+    weights=zeros(n,N);
+    weights(1,:)=w;
+    st=Commands(:,1);
+    Zi=transpose(zn(Commands(:,1),:));
+    cs=cumsum(P,2);
+    NewCommands(:,1)=st;
+
+    for k = 1:n-1 % main loop
+        ind=randsample(N,N,true,w);
+        Xi=Xi(:,ind);
+        %Resample states
+        %Zi=Zi(ind);
+        %Commands=Commands(ind,:);
+        Rand=rand(N,1);
+        StateArray=zeros(N,1);
+        for j=1:5
+            vals=cs(st,j);
+            indexarray=Rand<=vals;
+            StateArray=StateArray+j*indexarray;
+            Rand(indexarray)=1.2;
+        end
+        st=StateArray;
+        NewCommands(:,k+1)=st;
+        Zi=transpose(zn(StateArray,:));
+        Wi=transpose(mvnrnd([0,0],sigma^2*eye(2),N));
+        Xi=theta*(Xi)+phiz*(Zi)+phiw*(Wi); %Calculate each new state
+        w=p5(Xi(1,:),Xi(4,:),Y(:,k+1),sigmaV(h),pos_vec); % weighting REMOVE/INCLUDE LOG
+        omega(k+1) = sum(w);
+        w=w/sum(w);
+        weights(k+1,:)=w;
+
+
+        tau(1,k+1) =  sum(Xi(1,:).*w)/sum(w);
+        tau(2,k+1) =  sum(Xi(4,:).*w)/sum(w);
+    end
+
+    plot(tau(1,:),tau(2,:))
+    title("SISR N=10000")
+
+    cn(h) = sum(log(omega/N));
+
+%     plot(tau(1,:),tau(2,:))
+%     hold on
+end
+
+[wmax,wind] = max(cn);
+sigmaMax = sigmaV(wind)
