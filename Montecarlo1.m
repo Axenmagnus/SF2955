@@ -264,6 +264,36 @@ end
 drivingCommand
 hist(drivingCommand)
 
+%% Plot driver commands
+
+hold on
+for i=1:n
+    
+    if drivingCommand(i)==1
+        plot(tau(1,i),tau(2,i),"cx")
+    elseif drivingCommand(i)==2
+        plot(tau(1,i),tau(2,i),"gx")
+    elseif drivingCommand(i)==3
+        plot(tau(1,i),tau(2,i),"rx")
+    elseif drivingCommand(i)==4
+        plot(tau(1,i),tau(2,i),"bx")
+    elseif drivingCommand(i)==5
+        plot(tau(1,i),tau(2,i),"cx")
+    end
+    
+end
+hold on
+plot(pos_vec(1,1),pos_vec(2,1),'d')
+hold on
+plot(pos_vec(1,2),pos_vec(2,2),'d')
+hold on
+plot(pos_vec(1,3),pos_vec(2,3),'d')
+hold on
+plot(pos_vec(1,4),pos_vec(2,4),'d')
+hold on
+plot(pos_vec(1,5),pos_vec(2,5),'d')
+hold on
+plot(pos_vec(1,6),pos_vec(2,6),'d')
 
 
 %% Part 5 (2.3)
@@ -278,7 +308,7 @@ T = 10;
 
 
 cn = zeros(T,1);
-sigmaV = linspace(2.248, 2.25, T);
+sigmaV = linspace(2, 2.3, T);
 
 
 for h = 1:T
