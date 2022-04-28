@@ -131,7 +131,7 @@ hold on
 plot(pos_vec(1,6),pos_vec(2,6),'d')
 %figure
 %hist(w)
-ESSM=1/(sum((w/sum(w)).^2))
+%ESSM=1/(sum((w/sum(w)).^2))
 
 %% Part 3 Instructed weight adjustment
 
@@ -152,7 +152,7 @@ Wi=transpose(mvnrnd([0,0],sigma^2*eye(2),N));
 
 
 Zi=transpose(zn(Commands(:,1),:));
-for k = 1:70 % main loop
+for k = 1:500 % main loop
     Xi=theta*(Xi)+phiz*(Zi)+phiw*(Wi); %Calculate each new state
     w =log(w.*p(Xi(1,:),Xi(4,:),Y(:,k+1))); % weighting REMOVE/INCLUDE LOG
     L=max(w);
@@ -164,22 +164,22 @@ for k = 1:70 % main loop
     tau(2,k+1) =  sum(Xi(4,:).*w)/sum(w);
 end
 
-% plot(tau(1,:),tau(2,:))
-% title("SIS, N=10000")
-% hold on
-% plot(pos_vec(1,1),pos_vec(2,1),'d')
-% hold on
-% plot(pos_vec(1,2),pos_vec(2,2),'d')
-% hold on
-% plot(pos_vec(1,3),pos_vec(2,3),'d')
-% hold on
-% plot(pos_vec(1,4),pos_vec(2,4),'d')
-% hold on
-% plot(pos_vec(1,5),pos_vec(2,5),'d')
-% hold on
-% plot(pos_vec(1,6),pos_vec(2,6),'d')
-figure
-title("Histogram n=70")
+plot(tau(1,:),tau(2,:))
+title("SIS, N=10000")
+hold on
+plot(pos_vec(1,1),pos_vec(2,1),'d')
+hold on
+plot(pos_vec(1,2),pos_vec(2,2),'d')
+hold on
+plot(pos_vec(1,3),pos_vec(2,3),'d')
+hold on
+plot(pos_vec(1,4),pos_vec(2,4),'d')
+hold on
+plot(pos_vec(1,5),pos_vec(2,5),'d')
+hold on
+plot(pos_vec(1,6),pos_vec(2,6),'d')
+%figure
+%title("Histogram n=70")
 %loglog(hist((w))
 %ESSM=1/(sum((w/sum(w)).^2))
 %% Part 4
@@ -261,7 +261,7 @@ for j=1:n % Go through the time-steps
     drivingCommand(1,j)=idx;
     
 end
-drivingCommand
+%drivingCommand
 hist(drivingCommand)
 
 %% Plot driver commands
@@ -296,7 +296,7 @@ hold on
 plot(pos_vec(1,6),pos_vec(2,6),'d')
 
 
-%% Part 5 (2.3)
+%% Part 5 
 clc
 
 load("RSSI-measurements-unknown-sigma.mat")
