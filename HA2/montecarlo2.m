@@ -21,6 +21,14 @@ deltaI=Iran_infected(1,1);
 deltaS=Iran_population-Iran_susceptible(1,1)-Iran_infected(1,1);
 sum1=0; sum2=0;
 pirvec=zeros(length(Iran_infected),1);
+
+
+
+%Attempt at Random-Gaussian walk
+
+
+
+
 for k=1:height(Iran_infected)-1
     
     x=deltaI+deltaS;
@@ -28,6 +36,8 @@ for k=1:height(Iran_infected)-1
     pir=betarnd(x+1,Iran_infected(k,1)-deltaS+1); %Gibbs sampler,?? Or do we sample x too?
     pirvec(k,1)=pir;
     
+    %Random walk
+    alpha=min(1,f(xstar)/f(xk));
     
     
     
