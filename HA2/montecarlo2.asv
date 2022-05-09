@@ -19,12 +19,10 @@ a=2; b=3;
 %% Starting with Iran
 deltaI=Iran_infected(1,1);
 deltaS=Iran_population-Iran_susceptible(1,1);
-sum1=0; sum2=0;
 
 for k=1:height(Iran_infected)-1
-    sum1=sum1+deltaI+deltaS;
-    sum2=sum2+Iran_infected(k,1)-deltaS;
-    pir=betarnd(-a-sum1,b+sum2);
+    sum
+    pir=binornd((a-1)+);
     
     
     
