@@ -15,7 +15,6 @@ phi=0.995; alpha=2;
 a=2; b=3;
 
 
-
 %% Starting with Iran
 deltaI=Iran_infected(1,1);
 deltaS=Iran_population-Iran_susceptible(1,1)-Iran_infected(1,1);
@@ -31,6 +30,8 @@ Lambda=1;
 sumx=0;
 sumit=0;
 
+posteriror_lambda = @(x) prod(beta^alpha/factorial(alpha-1)*lambda^(alpha-1)*exp(-beta*lambda))*prod(nbinpdf(diff(y),kappa,phi));
+posterrior_t = @(y,kappa,phi,It,Pir) prod(nbinpdf((diff(y)),kappa,phi)*binpdf((diff(y)),It,Pir));
 
 for k=1:height(Iran_infected)-1
     epsilon1=normrnd(0,1); epsilon2=randi([-3,3]) ;
