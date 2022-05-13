@@ -32,7 +32,7 @@ sigma=0.01; M=3;
 %Attempt at Random-Gaussian walk
 
 f = @(lambda,Y,kappa) (alpha-1)*log(lambda)-beta*lambda+sum(kappa*log(1-phi)+Y*log(phi))+sum(gammaln(Y+kappa))-sum(gammaln(kappa))-sum(gammaln(Y));%+log(gamma(Y+kappa*ones(length(Y),1))/(factorial(Y)*gamma(kappa))));
-g = @(lambda,Y,kappa) sum(kappa*log(1-phi)+Y*log(phi))+sum(gammaln(Y+kappa))-sum(gammaln(kappa))-sum(log(factorial(Y)))-sum(gammaln(Y));
+g = @(lambda,Y,kappa) sum(kappa*log(1-phi)+Y*log(phi))+sum(gammaln(Y+kappa))-sum(gammaln(kappa))-sum(gammaln(Y));
 
 
 %Given ammount of breakpoints we give the initial variables.
@@ -44,7 +44,8 @@ lambdas=ones(1,breakpoint+1);
 
 
 parameters=zeros(breakpoint*2+2,1); %We need one pir, n breakpoints and n+1 lambdas.
-N=1;
+N=50;
+breakpointsss=zeros(N,1);
 for i=1:N
     placeholder=0;
     placeholder2=0;
@@ -67,7 +68,7 @@ for i=1:N
 
             deltas_temp=deltas(breakpoints(1,k):breakpoints(1,k+1),:);
 
-            prob=min(1,(placeholder+f(lambdastar,deltas_temp,(kappa2)))/(placeholder+f(lambdas(1,k),deltas_temp,(kappa1)))); %Set alpha
+            prob=min(1,(placeholder+f(lambdastar,deltas_temp,(kappa2)))/(placeholder+f(lambdas(1,k),deltas_temp,(kappa1)))) %Set alpha
             U=rand(1); % Drawn uniform 0,1
 
             if U<=prob
@@ -97,16 +98,12 @@ for i=1:N
             
             deltas_temp1=deltas(breakpoints(1,j):breakpoints(1,j+1),:);
             deltas_temp2=deltas(breakpoints(1,j):tstar,:);
+            
             prob=min(1,(placeholder2+g(lambdas(1,j),deltas_temp2,(kappa2)))/(placeholder2+g(lambdas(1,j),deltas_temp1,(kappa1)))); %Set alpha
             U=rand(1); % Drawn uniform 0,1
 
             if U<=prob
                 breakpoints(1,j+1)=tstar;
-                %placeholder=placeholder2+g(lambdas(1,j),deltas_temp2,(kappa2));
-
-            else
-                %placeholder=placeholder2+g(lambdas(1,j),deltas_temp1,(kappa1));
-
             end
             j=j+1;
         end
@@ -126,4 +123,5 @@ for i=1:N
         deltaS=-Iran_susceptible(k+1,1)+Iran_susceptible(k,1);
 
     end
+    breakpointsss(i,1)=tstar;
 end
