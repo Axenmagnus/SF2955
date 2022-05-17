@@ -179,9 +179,12 @@ xlabel("Iterations")
 ylabel("Proposed Lambdas")
 title("Iran data, 4 lambdas")
 
+%% Iran infected
 
-
-
+plot(Iran_infected)
+title("Iran Infected")
+xlabel("Time")
+ylabel("It")
 
 
 
@@ -195,8 +198,7 @@ deltaS=Germany_population-Germany_susceptible(1,1)-Germany_infected(1,1);
 delta_I=-deltaI-sum(diff(Germany_infected)); delta_S=deltaS-sum(diff(Germany_susceptible));
 x=delta_I+delta_S;
 
-beta=3;
-sigma=0.01; M=2; 
+sigma=0.005; M=2; 
 
 
 
@@ -317,3 +319,41 @@ for i=1:N
     
 end
 %plot(breakpointsss)
+
+
+%% Plot section t 
+
+
+plot(breakpointsss(:,1))
+hold on
+plot(breakpointsss(:,2))
+hold on
+plot(breakpointsss(:,3))
+legend('t_1','t_2','t_3')
+xlabel("Iterations")
+ylabel("Proposed breakpoint")
+title("German data, 3 Breakpoint")
+
+
+%% Plot section Lambda
+
+plot(lambdasVec(:,1))
+hold on
+plot(lambdasVec(:,2))
+hold on
+plot(lambdasVec(:,3))
+hold on
+plot(lambdasVec(:,4))
+legend('lambda_1','lambda_2','lambda_3','lambda_4')
+xlabel("Iterations")
+ylabel("Proposed Lambdas")
+title("German data, 4 lambdas")
+
+%% Germany infected
+
+plot(Germany_infected)
+title("Germany Infected")
+xlabel("Time")
+ylabel("It")
+
+

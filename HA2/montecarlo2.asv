@@ -38,7 +38,7 @@ f = @(lambda,Y,kappa) alpha*log(beta)-gammaln(alpha)+(alpha-1)*log(lambda)-beta*
 g = @(lambda,Y,kappa) sum(gammaln(kappa+Y)-gammaln(Y+1)-gammaln(kappa)+kappa*log(1-phi)+Y*log(phi)); %Draw for t
 
 %Given ammount of breakpoints we give the initial variables.
-breakpoint = 1;
+breakpoint = 3;
 N=15000;
 
 breakpoints=round(linspace(0,length(Iran_infected),breakpoint+2));
@@ -155,10 +155,11 @@ end
 
 
 plot(breakpointsss(:,1))
-%hold on
-%plot(breakpointsss(:,2))
-%hold on
-%plot(breakpointsss(:,3))
+hold on
+plot(breakpointsss(:,2))
+hold on
+plot(breakpointsss(:,3))
+legend('t_1','t_2','t_3')
 xlabel("Iterations")
 ylabel("Proposed breakpoint")
 title("Iran data, 3 Breakpoint")
@@ -166,18 +167,24 @@ title("Iran data, 3 Breakpoint")
 
 %% Plot section Lambda
 
-plot(breakpointsss(:,1))
-%hold on
-%plot(breakpointsss(:,2))
-%hold on
-%plot(breakpointsss(:,3))
+plot(lambdasVec(:,1))
+hold on
+plot(lambdasVec(:,2))
+hold on
+plot(lambdasVec(:,3))
+hold on
+plot(lambdasVec(:,4))
+legend('lambda_1','lambda_2','lambda_3','lambda_4')
 xlabel("Iterations")
-ylabel("Proposed breakpoint")
-title("Iran data, 3 Breakpoint")
+ylabel("Proposed Lambdas")
+title("Iran data, 4 lambdas")
 
+%% Iran infected
 
-
-
+plot(Iran_infected)
+title("Iran Infected")
+xlabel("Time")
+ylabel("It")
 
 
 
@@ -202,7 +209,7 @@ f = @(lambda,Y,kappa) alpha*log(beta)-gammaln(alpha)+(alpha-1)*log(lambda)-beta*
 g = @(lambda,Y,kappa) sum(gammaln(kappa+Y)-gammaln(Y+1)-gammaln(kappa)+kappa*log(1-phi)+Y*log(phi)); %Draw for t
 
 %Given ammount of breakpoints we give the initial variables.
-breakpoint = 3;
+breakpoint = 2;
 N=15000;
 
 breakpoints=round(linspace(0,length(Germany_infected),breakpoint+2));
@@ -313,3 +320,41 @@ for i=1:N
     
 end
 %plot(breakpointsss)
+
+
+%% Plot section t 
+
+
+plot(breakpointsss(:,1))
+hold on
+plot(breakpointsss(:,2))
+%hold on
+%plot(breakpointsss(:,3))
+legend('t_1','t_2','t_3')
+xlabel("Iterations")
+ylabel("Proposed breakpoint")
+title("German data, 2 Breakpoint")
+
+
+%% Plot section Lambda
+
+plot(lambdasVec(:,1))
+hold on
+plot(lambdasVec(:,2))
+hold on
+plot(lambdasVec(:,3))
+%hold on
+%plot(lambdasVec(:,4))
+legend('lambda_1','lambda_2','lambda_3','lambda_4')
+xlabel("Iterations")
+ylabel("Proposed Lambdas")
+title("German data, 3 lambdas")
+
+%% Iran infected
+
+plot(Germany_infected)
+title("Germany Infected")
+xlabel("Time")
+ylabel("It")
+
+
