@@ -356,4 +356,14 @@ title("Germany Infected")
 xlabel("Time")
 ylabel("It")
 
+Intervall1=[9+9:9+14]; Intervall2=[16+9:16+14];Intervall3=[23+9:23+16];
+hold on
+plot(Intervall1,Germany_infected(Intervall1),'LineWidth',4)
+hold on 
+plot(Intervall2,Germany_infected(Intervall2),'LineWidth',4)
+hold on
+plot(Intervall3,Germany_infected(Intervall3),'LineWidth',4)
+
+hold on
+plot(breakpoints(1,2:4),Germany_infected(breakpoints(1,2:4)),"r*")
 

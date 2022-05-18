@@ -198,8 +198,7 @@ deltaS=Germany_population-Germany_susceptible(1,1)-Germany_infected(1,1);
 delta_I=-deltaI-sum(diff(Germany_infected)); delta_S=deltaS-sum(diff(Germany_susceptible));
 x=delta_I+delta_S;
 
-beta=3;
-sigma=0.01; M=2; 
+sigma=0.005; M=2; 
 
 
 
@@ -209,7 +208,7 @@ f = @(lambda,Y,kappa) alpha*log(beta)-gammaln(alpha)+(alpha-1)*log(lambda)-beta*
 g = @(lambda,Y,kappa) sum(gammaln(kappa+Y)-gammaln(Y+1)-gammaln(kappa)+kappa*log(1-phi)+Y*log(phi)); %Draw for t
 
 %Given ammount of breakpoints we give the initial variables.
-breakpoint = 2;
+breakpoint = 3;
 N=15000;
 
 breakpoints=round(linspace(0,length(Germany_infected),breakpoint+2));
@@ -328,12 +327,12 @@ end
 plot(breakpointsss(:,1))
 hold on
 plot(breakpointsss(:,2))
-%hold on
-%plot(breakpointsss(:,3))
+hold on
+plot(breakpointsss(:,3))
 legend('t_1','t_2','t_3')
 xlabel("Iterations")
 ylabel("Proposed breakpoint")
-title("German data, 2 Breakpoint")
+title("German data, 3 Breakpoint")
 
 
 %% Plot section Lambda
@@ -343,18 +342,28 @@ hold on
 plot(lambdasVec(:,2))
 hold on
 plot(lambdasVec(:,3))
-%hold on
-%plot(lambdasVec(:,4))
+hold on
+plot(lambdasVec(:,4))
 legend('lambda_1','lambda_2','lambda_3','lambda_4')
 xlabel("Iterations")
 ylabel("Proposed Lambdas")
-title("German data, 3 lambdas")
+title("German data, 4 lambdas")
 
-%% Iran infected
+%% Germany infected
 
 plot(Germany_infected)
 title("Germany Infected")
 xlabel("Time")
 ylabel("It")
 
+Intervall1=[9+9:9+14]; Intervall2=[16+9:16+14];Intervall3=[23+9:23+16];
+hold on
+plot(Intervall1,Germany_infected(Intervall1),'LineWidth',4)
+hold on 
+plot(Intervall2,Germany_infected(Intervall2),'LineWidth',4)
+hold on
+plot(Intervall3,Germany_infected(Intervall3),'LineWidth',4)
+
+hold on
+plot(breakpoints(1,2:4),Germany_infected(breakpoints(1,2:4)),"r*")
 
